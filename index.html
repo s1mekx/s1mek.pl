@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>S1MEK</title>
+    <link href="profile.jpg" rel="icon" type="image/png" sizes="32x32">
+    <link href="profile.jpg" rel="apple-touch-icon" sizes="180x180">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="S1MEK" name="description">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --clr-accent-primary: #ffa704;
+            --clr-glow-primary: rgba(184, 132, 53, 0.6);
+            --clr-accent-negative: #83817f;
+            --clr-glow-negative: rgba(131, 129, 127, 0.6);
+            --clr-accent-neutral: #4f4d49;
+            --clr-glow-neutral: rgba(79, 77, 73, 0.6);
+            --bg-grad-top: #0b0b0a;
+            --bg-grad-bottom: rgb(28, 27, 26);
+            --bg-element: #1c1b1a;
+            --txt-main: #cac9c7;
+            --txt-subdued: #83827f;
+            --bdr-default: var(--clr-accent-primary);
+        }
+
+        html, body { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(160deg, var(--bg-grad-top) 0%, var(--bg-grad-bottom) 40%, var(--bg-grad-top) 70%, var(--bg-grad-bottom) 100%);
+            background-size: 300% 300%;
+            animation: animatedBackground 30s ease-in-out infinite;
+            color: var(--txt-main);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        @keyframes animatedBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #symbol-rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0; 
+        }
+
+        .fw-light { font-weight: 300; }
+        .fw-normal { font-weight: 400; }
+        .fw-medium { font-weight: 500; }
+        .fw-semibold { font-weight: 700; }
+        .fw-bold { font-weight: 700; }
+
+        .fx-pulsate-gentle {
+            animation: keyframe-pulsate-gentle 1.8s infinite ease-in-out;
+        }
+        @keyframes keyframe-pulsate-gentle {
+            0%, 100% { box-shadow: 0 0 8px transparent; transform: scale(1); }
+            50% { box-shadow: 0 0 20px var(--clr-glow-primary); transform: scale(1.05); }
+        }
+        
+        #curtain-loader-screen {
+            align-items: center;
+            background-color: var(--bg-grad-top);
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            left: 0;
+            position: fixed;
+            top: 0;
+            transition: opacity 0.5s ease-out;
+            width: 100%;
+            z-index: 10001;
+        }
+        .stretch-loader {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+        }
+        .stretch-loader div {
+            background-color: var(--clr-accent-primary);
+            height: 50px;
+            width: 8px;
+            margin: 0 3px;
+            border-radius: 3px;
+            animation: stretch-delay 1.2s infinite ease-in-out;
+        }
+        .stretch-loader .rect2 { animation-delay: -1.1s; }
+        .stretch-loader .rect3 { animation-delay: -1.0s; }
+        .stretch-loader .rect4 { animation-delay: -0.9s; }
+        .stretch-loader .rect5 { animation-delay: -0.8s; }
+        @keyframes stretch-delay {
+            0%, 40%, 100% { transform: scaleY(0.4); }
+            20% { transform: scaleY(1.0); box-shadow: 0 0 10px var(--clr-glow-primary); }
+        }
+
+        .main-layout-shroud {
+            filter: blur(10px) saturate(0.5);
+            pointer-events: none;
+            user-select: none;
+            transition: filter 0.5s ease-out;
+        }
+
+        #modal-age-check-barrier {
+            align-items: center;
+            backdrop-filter: blur(8px);
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            left: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        #modal-age-check-barrier.visible {
+            opacity: 1;
+        }
+        #modal-age-check-barrier .popup-dialog-content {
+            background-color: var(--bg-element);
+            border: 1px solid var(--clr-accent-neutral);
+            border-top: 3px solid var(--clr-accent-primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            max-width: 500px;
+            width: 90%;
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        #modal-age-check-barrier.visible .popup-dialog-content {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        #modal-age-check-barrier .popup-dialog-content h2 {
+            color: var(--clr-accent-primary);
+        }
+        #modal-age-check-barrier .popup-dialog-content p {
+            color: var(--txt-main);
+        }
+        #modal-age-check-barrier button.btn-confirm-positive { box-shadow: 0 0 15px var(--clr-glow-primary); }
+        #modal-age-check-barrier button.btn-confirm-negative { box-shadow: 0 0 15px var(--clr-glow-negative); }
+        #modal-age-check-barrier button:hover { transform: translateY(-3px) scale(1.05); }
+
+        .deco-symbol-cascade {
+            animation: keyframe-symbol-fall linear infinite;
+            color: var(--clr-glow-primary);
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            top: -30px;
+            user-select: none;
+            z-index: 0;
+        }
+        @keyframes keyframe-symbol-fall {
+            0% {
+                opacity: 0;
+                transform: translateY(-10vh) translateX(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(0.7);
+            }
+            10% {
+                opacity: 0.7;
+            }
+            80% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) translateX(calc(var(--random-x-offset) * 1vw))
+                           rotateX(calc(var(--random-rot) * 70deg))
+                           rotateY(calc(var(--random-rot) * 90deg))
+                           rotateZ(calc(var(--random-rot) * 120deg))
+                           scale(calc(0.5 + var(--random-scale) * 0.8));
+            }
+        }
+
+        .btn-with-fx-glow { transition: all 0.3s ease; }
+        .btn-with-fx-glow.theme-positive { box-shadow: 0 0 12px var(--clr-glow-primary); }
+        .btn-with-fx-glow.theme-positive:hover { box-shadow: 0 0 20px var(--clr-accent-primary); transform: translateY(-2px) scale(1.03); }
+        .btn-with-fx-glow.theme-negative { box-shadow: 0 0 12px var(--clr-glow-negative); }
+        .btn-with-fx-glow.theme-negative:hover { box-shadow: 0 0 20px var(--clr-accent-negative); transform: translateY(-2px) scale(1.03); }
+
+        .streamer-live-widget .signal-dot {
+            border-radius: 50%;
+            display: inline-block;
+            height: 8px;
+            margin-right: 5px;
+            vertical-align: middle;
+            width: 8px;
+        }
+        .streamer-live-widget.is-broadcasting .signal-dot { background-color: var(--clr-accent-primary); box-shadow: 0 0 10px var(--clr-glow-primary); animation: liveDotPulse 1.5s infinite ease-in-out; }
+        .streamer-live-widget.is-idle .signal-dot { background-color: var(--clr-accent-negative); box-shadow: 0 0 10px var(--clr-glow-negative); }
+        .streamer-live-widget.is-polling .signal-dot { animation: keyframe-dot-blink 1s infinite; background-color: var(--clr-accent-neutral); box-shadow: 0 0 10px var(--clr-glow-neutral); }
+        
+        @keyframes keyframe-dot-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes liveDotPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+
+        .ext-link-glyph { color: var(--txt-subdued); transition: transform 0.3s ease, color 0.3s ease; }
+        .ext-link-glyph:hover { color: var(--clr-accent-primary); transform: translateY(-3px) scale(1.15); }
+
+        .media-zoom-effect-host {
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-block;
+            overflow: hidden;
+        }
+        .media-zoom-effect-host img {
+            display: block;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .media-zoom-effect-host:hover img { transform: scale(1.1); }
+        
+        .page-core-container {
+            flex: 1;
+            padding-top: 2rem;
+        }
+        
+        #root-application-view {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+        #root-application-view.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes zoomInFade {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideInFromLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes dropInBounce {
+            0% { opacity: 0; transform: translateY(-40px) scale(0.8); }
+            60% { opacity: 1; transform: translateY(5px) scale(1.05); }
+            100% { opacity: 1; transform: translateY(0px) scale(1); }
+        }
+        @keyframes fadeInText {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes drawLine {
+            from { transform: scaleX(0); opacity: 0.1; }
+            to { transform: scaleX(1); opacity: 0.3; }
+        }
+         @keyframes cardFlyIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) rotateY(-15deg) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateY(0deg) scale(1);
+            }
+        }
+        @keyframes slideInFromBottom {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideDownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        #new-video-announcement {
+            opacity: 0;
+        }
+
+        .video-announcement-card {
+            box-shadow: 0 0 25px var(--clr-glow-primary);
+        }
+
+        #root-application-view.loaded header .flex.items-center.space-x-4 > img { 
+            opacity: 0;
+            animation: zoomInFade 0.7s 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        #root-application-view.loaded header .text-left > img { 
+            opacity: 0;
+            animation: slideInFromLeft 0.7s 0.4s ease-out forwards;
+        }
+        #root-application-view.loaded header .text-left > a#widget-stream-activity { 
+            opacity: 0;
+            animation: slideInFromLeft 0.7s 0.6s ease-out forwards;
+        }
+
+        #root-application-view.loaded nav.flex.justify-center a {
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: dropInBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        #root-application-view.loaded nav.flex.justify-center a:nth-child(1) { animation-delay: 0.7s; }
+        #root-application-view.loaded nav.flex.justify-center a:nth-child(2) { animation-delay: 0.8s; }
+        #root-application-view.loaded nav.flex.justify-center a:nth-child(3) { animation-delay: 0.9s; }
+        #root-application-view.loaded nav.flex.justify-center a:nth-child(4) { animation-delay: 1.0s; }
+        #root-application-view.loaded nav.flex.justify-center a:nth-child(5) { animation-delay: 1.1s; }
+        #root-application-view.loaded nav.flex.justify-center a:nth-child(6) { animation-delay: 1.2s; }
+
+        #root-application-view.loaded .animated-divider-text {
+            opacity: 0;
+            animation: fadeInText 0.8s ease-out 1.3s forwards;
+        }
+        #root-application-view.loaded .animated-divider-line {
+            transform: scaleX(0);
+            opacity: 0;
+            animation: drawLine 1s cubic-bezier(0.645, 0.045, 0.355, 1) 1.4s forwards;
+        }
+        .animated-divider-line.left-origin { transform-origin: left; }
+        .animated-divider-line.right-origin { transform-origin: right; }
+        
+        #root-application-view.loaded #new-video-announcement {
+            opacity: 0;
+            animation: slideDownFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.5s forwards;
+        }
+
+        #root-application-view.loaded section.grid .card-item-block {
+            opacity: 0;
+            animation: cardFlyIn 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        #root-application-view.loaded section.grid .card-item-block:nth-child(1) { animation-delay: 1.7s; }
+        #root-application-view.loaded section.grid .card-item-block:nth-child(2) { animation-delay: 1.9s; }
+        #root-application-view.loaded section.grid .card-item-block:nth-child(3) { animation-delay: 2.1s; }
+        #root-application-view.loaded section.grid .card-item-block:nth-child(4) { animation-delay: 2.3s; }
+
+        section.grid .card-item-block:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 35px var(--clr-glow-primary), 0 0 10px var(--clr-accent-primary) inset;
+            border-color: var(--clr-accent-primary);
+        }
+        
+        #root-application-view.loaded footer.w-full {
+            opacity: 0;
+            animation: slideInFromBottom 0.8s ease-out 2.5s forwards;
+        }
+
+        @keyframes keyframe-pulse-tag {
+          0%, 100% { 
+            transform: scale(1); 
+            box-shadow: 0 0 8px transparent;
+          }
+          50% { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 15px var(--clr-glow-primary); 
+          }
+        }
+
+        .tag-new-video {
+            animation: keyframe-pulse-tag 2.5s infinite ease-in-out;
+        }
+
+        .video-announcement-card {
+            position: relative;
+            background-image: radial-gradient(circle at center, rgba(184, 66, 53, 0.1), transparent 60%);
+            border-image: linear-gradient(145deg, var(--clr-accent-primary), var(--clr-accent-neutral)) 1;
+            box-shadow: 0 0 30px var(--clr-glow-primary);
+        }
+
+        .video-announcement-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 45px var(--clr-glow-primary);
+            border-image: linear-gradient(145deg, #d45f51, #9e9d9a) 1;
+        }
+
+        .a22{
+        color:#ff0800
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            margin-left: 585px;
+        }
+
+        .promo-box {
+            width: 360px;
+            height: 170px;
+            background: #111;
+            border: 1px solid #1f1f1f;
+            border-radius: 12px;
+            padding: 20px;
+            text-decoration: none;
+            color: rgb(255, 255, 255);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 0.25s ease;
+            box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+        }
+
+        .promo-box:hover {
+            background: #1a1a1a;
+            transform: translateY(-6px);
+            box-shadow: 0 0 20px #ffa704;
+        }
+
+        .promo-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .promo-code {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .promo-bonus {
+            color: #4da6ff;
+            font-weight: bold;
+        }
+        
+        /* Kontener przycisków */
+        .btnContainerF2kL {
+            display: flex;
+            gap: 200px;
+            justify-content: center;
+            margin: 30px;
+        }
+
+        /* Przycisk */
+        .btnX9fK2 {
+            padding: 15px 30px;
+            font-size: 18px;
+            color: white;
+            background-color: #048315;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: background 0.3s;
+        }
+
+        .btnX9fK2:hover {
+            background-color: #00b327;
+        }
+
+        .btnM4pQ7 {
+            padding: 15px 30px;
+            font-size: 18px;
+            color: white;
+            background-color: #048315;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: background 0.3s;
+        }
+
+        .btnM4pQ7:hover {
+            background-color: #00b327;
+        }
+
+        /* Modal */
+        .modalQ7vH1 {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modalQ7vH1 img {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .modalQ7vH1.show {
+            display: flex;
+        }
+
+        /* DODATKOWE STYLE RESPONSYWNE DLA TELEFONÓW */
+
+        @media (max-width: 1023px) {
+            body { padding-top: 0!important; animation: none; }
+            .page-core-container {
+                margin-bottom: 1rem;
+                padding-top: 1rem;
+            }
+            .fx-pulsate-gentle { animation: none; }
+            #modal-age-check-barrier .popup-dialog-content { max-width: 95%; transform: scale(1) translateY(0); opacity: 1; transition: none;}
+            
+            #root-application-view.loaded header .flex.items-center.space-x-4 > img,
+            #root-application-view.loaded header .text-left > img,
+            #root-application-view.loaded header .text-left > a#widget-stream-activity,
+            #root-application-view.loaded nav.flex.justify-center a,
+            #root-application-view.loaded .animated-divider-text,
+            #root-application-view.loaded .animated-divider-line,
+            #root-application-view.loaded section.grid .card-item-block,
+            #root-application-view.loaded footer.w-full,
+            #root-application-view.loaded #new-video-announcement {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .bio-header-mobile-spacing { margin-top: 0 !important; }
+            .legal-footer-text-small { font-size: 0.7rem; line-height: 1.3; }
+            .card-item-responsive-layout { flex-direction: column; }
+            .card-item-media-pane, .card-item-desc-pane, .card-item-action-pane {
+                text-align: center;
+                width: 100% !important;
+            }
+            .card-item-desc-pane ul { display: inline-block; margin-left: auto; margin-right: auto; text-align: left;}
+            .card-item-action-pane .button-cluster { align-items: center; flex-direction: column; }
+            .card-item-action-pane .button-cluster > * { margin-bottom: 0.5rem; width: 80%; }
+            .card-item-action-pane .btn-copy-referral { width: 80%; }
+            .card-item-badge-overlay { right: 5px !important; top: 5px !important; }
+            section.grid .card-item-block:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.25), 0 0 15px var(--clr-glow-primary);
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Poprawki dla kontenera promocji */
+            .container {
+                margin-left: 0 !important;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .promo-box {
+                width: 90% !important;
+                max-width: 360px;
+                height: auto;
+                min-height: 140px;
+            }
+            
+            .promo-title {
+                font-size: 20px;
+            }
+            
+            .promo-code {
+                font-size: 16px;
+            }
+            
+            /* Poprawki dla przycisków konkursów */
+            .btnContainerF2kL {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .btnX9fK2, .btnM4pQ7 {
+                width: 90%;
+                margin: 0 auto;
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+            
+            /* Poprawki dla sekcji biznesowej */
+            .page-core-container p {
+                padding: 0 15px;
+                text-align: center;
+            }
+            
+            /* Poprawki dla nagłówka */
+            .bio-header-mobile-spacing {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .bio-header-mobile-spacing .flex.items-center.space-x-4 {
+                flex-direction: column;
+            }
+            
+            /* Poprawki dla nawigacji */
+            nav.flex.justify-center {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            nav.flex.justify-center a {
+                font-size: 24px;
+            }
+            
+            /* Poprawki dla separatora */
+            .max-w-xs.sm\:max-w-sm.md\:max-w-lg.lg\:max-w-4xl {
+                width: 95%;
+            }
+            
+            /* Poprawki dla stopki */
+            footer {
+                padding: 0 15px;
+                text-align: center;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Dodatkowe poprawki dla bardzo małych ekranów */
+            .promo-box {
+                width: 95% !important;
+            }
+            
+            .btnX9fK2, .btnM4pQ7 {
+                width: 95%;
+                font-size: 14px;
+                padding: 10px 15px;
+            }
+            
+            /* Zmniejszenie rozmiaru avataru na bardzo małych ekranach */
+            .bio-header-mobile-spacing .flex.items-center.space-x-4 img {
+                width: 100px;
+                height: 100px;
+            }
+            
+            /* Zmniejszenie logo */
+            .text-left img {
+                max-width: 150px;
+            }
+        }
+
+    </style>
+</head>
+
+<body class="flex flex-col items-center" style="padding-top: 0px;">
+    <div id="symbol-rain-container"></div>
+
+    <div id="curtain-loader-screen" style="opacity: 0; display: none;">
+        <div class="stretch-loader">
+            <div></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div>
+        </div>
+    </div>
+
+    <div id="modal-age-check-barrier" style="display: none;" class="">
+        <div class="popup-dialog-content p-6 md:p-8 rounded-lg shadow-2xl text-center">
+            <img alt="18+ Icon" class="h-32 mx-auto " src="18+.png">
+            <h2 class="text-3xl fw-semibold mb-4">Weryfikacja wieku</h2>
+            <p class="mb-6 text-lg">
+                Czy masz ukończone 18 lat?
+            </p>
+            <div class="flex space-x-4 justify-center">
+                <button class="btn-confirm-positive bg-[var(--clr-accent-primary)] hover:bg-[#A33A2D] text-white font-bold py-2.5 px-6 rounded-lg transition-all duration-300 btn-with-fx-glow theme-positive text-md" id="btn-age-pass">
+                    Tak
+                </button>
+                <button class="btn-confirm-negative bg-[var(--clr-accent-negative)] hover:bg-[#6F6E6B] text-white font-bold py-2.5 px-6 rounded-lg transition-all duration-300 btn-with-fx-glow theme-negative text-md" id="btn-age-fail">
+                    Nie
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-core-container w-full text-center loaded" id="root-application-view" style="padding-top: 1rem;">
+        <header class="bio-header-mobile-spacing mb-6 md:mb-8 flex justify-center items-center">
+            <div class="flex items-center space-x-4">
+                <img alt="SLADE Profile Picture" class="rounded-full border-2 border-[var(--clr-accent-primary)]" height="120" src="profile.jpg" width="120">
+                <div class="text-left">
+                    <picture>
+  <!-- Obraz dla telefonów (małe ekrany) -->
+  <source srcset="Sladelogo2.png" media="(max-width: 600px)">
+  
+  <!-- Domyślny obraz dla większych ekranów -->
+  <img src="Sladelogo.png" alt="SLADE Logo" style="width: 180px; max-width: 100%; height: auto; display: block; margin: 0 auto;">
+</picture>
+                    <a class="streamer-live-widget inline-block bg-gray-800 rounded-full py-1 px-3 border text-sm transition-all hover:opacity-90 is-broadcasting border-[var(--clr-accent-primary)] cursor-pointer" id="widget-stream-activity" href="https://kick.com/S1MEK" target="_blank">
+                        <span class="signal-dot"></span>
+                        <span class="text-white font-medium" id="text-stream-activity-status">LIVE NOW!</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <nav class="flex justify-center space-x-5 mb-8">
+            <a aria-label="Instagram" class="text-gray-400 text-3xl ext-link-glyph" href="https://www.instagram.com/s1mekx/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a aria-label="YouTube" class="text-gray-400 text-3xl ext-link-glyph" href="https://www.youtube.com/@s1mekcs" target="_blank"><i class="fab fa-youtube"></i></a>
+            <a aria-label="Kick" class="text-gray-400 text-3xl ext-link-glyph" href="https://kick.com/s1mek" target="_blank"><i class="fa-brands fa-kickstarter-k"></i></a>
+            <a aria-label="Discord" class="text-gray-400 text-3xl ext-link-glyph" href="https://discord.gg/gpbKxyxJuK" target="_blank"><i class="fab fa-discord"></i></a>
+            <a aria-label="Email" class="text-gray-400 text-3xl ext-link-glyph" href="mailto: s1mek@stormmedia.gg" target="_blank"><i class="fas fa-envelope"></i></a>
+        </nav>
+        
+        <p>Business: s1mek@stormmedia.gg</p>
+
+        <div class="max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-4xl mx-auto my-8">
+            <div class="flex items-center justify-center">
+                <div class="h-px flex-grow bg-gradient-to-r from-transparent via-[var(--clr-accent-primary)] to-transparent opacity-30 animated-divider-line left-origin"></div>
+                <span class="px-4 text-sm font-medium text-[var(--clr-accent-primary)] whitespace-nowrap animated-divider-text">WBIJAJ TU</span>
+                <div class="h-px flex-grow bg-gradient-to-l from-transparent via-[var(--clr-accent-primary)] to-transparent opacity-30 animated-divider-line right-origin"></div>
+            </div>
+        </div>
+
+        <div class="container">
+            <a href="https://csgo-skins.com/?ref=S1MEK" class="promo-box">
+                <img src="csgoskins.png" alt="Logo" style="width:220px; height:50px; object-fit:contain; margin-bottom:10px;">
+                <div class="promo-code">KOD: S1MEK</div>
+                <div class="promo-bonus">+10% & 2.10 PLN</div>
+            </a>
+
+            <a href="https://casehug.com/r/S1MEK" class="promo-box">
+                <img src="casehug.png" alt="Logo" style="width:300px; height:50px; object-fit:contain; margin-bottom:10px;">
+                <div class="promo-code">KOD: S1MEK</div>
+                <div class="promo-bonus">+20% & 4.00 PLN</div>
+            </a>
+        </div>
+
+        <div class="btnContainerF2kL">
+            <button class="btnX9fK2">Aktualny Konkurs
+                <br>CSGOSKINS</br>
+            </button>
+            <button class="btnM4pQ7">Aktualny Konkurs
+                <br>CASEHUG</br>
+            </button>
+        </div>
+
+        <div class="modalQ7vH1" id="modalR3kL9">
+            <img src="1.png" alt="Obraz 1">
+        </div>
+
+        <div class="modalQ7vH1" id="modalB8nT2">
+            <img src="2.png" alt="Obraz 2">
+        </div>
+    </div>
+
+    <footer class="w-full py-6 text-center text-gray-400">
+        © 2025 S1MEK
+    </footer>
+
+    <script>
+        // Inicjalizacja modali konkursów
+        const btn1 = document.querySelector('.btnX9fK2');
+        const modal1 = document.getElementById('modalR3kL9');
+
+        const btn2 = document.querySelector('.btnM4pQ7');
+        const modal2 = document.getElementById('modalB8nT2');
+
+        function openModal(modal) {
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        if (btn1 && modal1) {
+            btn1.addEventListener('click', () => openModal(modal1));
+            modal1.addEventListener('click', () => closeModal(modal1));
+        }
+
+        if (btn2 && modal2) {
+            btn2.addEventListener('click', () => openModal(modal2));
+            modal2.addEventListener('click', () => closeModal(modal2));
+        }
+    </script>
+
+    <script>
+        // Główny kod aplikacji
+        ((globalContext, docContext) => {
+            "use strict";
+
+            const CONFIG = {
+                AGE_FAIL_NAV: 'https://google.com',
+                STREAM_PROVIDERS: {
+                    TWITCH_USER: 'S1MEK',
+                    KICK_USER: 'S1MEK',
+                },
+                API_URLS: {
+                    KICK_STATUS: (user) => `https://kick.com/api/v2/channels/${user}`,
+                    TWITCH_STATUS: (user) => `https://decapi.me/twitch/uptime/${user}`,
+                },
+            };
+
+            const DOM_SELECTORS = {
+                LOAD_OVERLAY: '#curtain-loader-screen',
+                AGE_MODAL: '#modal-age-check-barrier',
+                MAIN_WRAPPER: '#root-application-view',
+                AGE_CONFIRM_BTN: '#btn-age-pass',
+                AGE_DENY_BTN: '#btn-age-fail',
+                STREAM_STATUS_WIDGET: '#widget-stream-activity',
+                STREAM_STATUS_LABEL: '#text-stream-activity-status',
+                COPY_BUTTON_CLASS: '.btn-copy-referral',
+                OFFER_BADGE_CLASS: '.card-item-badge-overlay',
+                MAIN_CONTENT_AREA: '.page-core-container',
+                SYMBOL_RAIN_CONTAINER: '#symbol-rain-container'
+            };
+
+            const AppController = {
+                elements: {},
+                timers: {
+                    copyFeedback: {}
+                },
+                state: {
+                    isCopied: {}
+                },
+
+                queryElement: (selector, parent = docContext) => parent.querySelector(selector),
+                queryAllElements: (selector, parent = docContext) => parent.querySelectorAll(selector),
+
+                initializeUserInterface: function() {
+                    this.elements.loadOverlay = this.queryElement(DOM_SELECTORS.LOAD_OVERLAY);
+                    this.elements.ageModal = this.queryElement(DOM_SELECTORS.AGE_MODAL);
+                    this.elements.mainWrapper = this.queryElement(DOM_SELECTORS.MAIN_WRAPPER);
+                    this.elements.ageConfirmBtn = this.queryElement(DOM_SELECTORS.AGE_CONFIRM_BTN);
+                    this.elements.ageDenyBtn = this.queryElement(DOM_SELECTORS.AGE_DENY_BTN);
+                    this.elements.streamStatusWidget = this.queryElement(DOM_SELECTORS.STREAM_STATUS_WIDGET);
+                    this.elements.streamStatusLabel = this.queryElement(DOM_SELECTORS.STREAM_STATUS_LABEL);
+                    this.elements.symbolRainContainer = this.queryElement(DOM_SELECTORS.SYMBOL_RAIN_CONTAINER);
+                    
+                    this.uiEffectsModule.managePageScroll();
+                    this.uiInteractionsModule.bindCopyActions();
+                    this.uiEffectsModule.initiateLoadTransition();
+                    
+                    globalContext.addEventListener('resize', this.responsiveModule.handleResize);
+                    this.responsiveModule.handleResize(); 
+                },
+
+                uiEffectsModule: {
+                    managePageScroll: () => {
+                        if (globalContext.history.scrollRestoration) {
+                            globalContext.history.scrollRestoration = 'manual';
+                        }
+                        const scrollPageToTop = () => globalContext.scrollTo(0, 0);
+                        docContext.addEventListener('DOMContentLoaded', () => setTimeout(scrollPageToTop, 100));
+                        globalContext.addEventListener('load', () => setTimeout(scrollPageToTop, 100));
+                    },
+
+                    initiateLoadTransition: function() {
+                        globalContext.addEventListener('load', () => {
+                            setTimeout(() => {
+                                if (AppController.elements.loadOverlay) AppController.elements.loadOverlay.style.opacity = '0';
+                                setTimeout(() => {
+                                    if (AppController.elements.loadOverlay) AppController.elements.loadOverlay.style.display = 'none';
+                                    AppController.ageGateModule.trigger();
+                                }, 500);
+                            }, 800); 
+                        });
+                    },
+                    
+                    startSymbolRain: function() {
+                        if (globalContext.innerWidth < 1024) return;
+
+                        const rainContainer = AppController.elements.symbolRainContainer;
+                        if (!rainContainer) {
+                            return; 
+                        }
+
+                        const createSymbol = () => {
+                            const s = docContext.createElement('div');
+                            const symbols = ['$', '€', '♛', '♦', '♠', '♣', '♥', '₿', '🍮'];
+                            s.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+                            s.classList.add('deco-symbol-cascade');
+                            s.style.left = `${Math.random() * 98}vw`;
+                            s.style.fontSize = `${Math.random() * 20 + 16}px`; 
+                            s.style.opacity = (Math.random() * 0.4 + 0.2).toString(); 
+                            const animDuration = Math.random() * 6 + 9; 
+                            s.style.animationDuration = `${animDuration}s`;
+                            s.style.animationDelay = `${Math.random() * 4}s`;
+
+                            s.style.setProperty('--random-x-offset', (Math.random() * 10 - 5).toFixed(2));
+                            s.style.setProperty('--random-rot', (Math.random() * 2 - 1).toFixed(2));
+                            s.style.setProperty('--random-scale', Math.random().toFixed(2));
+                            
+                            rainContainer.appendChild(s);
+                            setTimeout(() => s.remove(), animDuration * 1000 + parseFloat(s.style.animationDelay) * 1000 + 500);
+                        };
+                        for (let i = 0; i < 35; i++) createSymbol(); 
+                        setInterval(createSymbol, 450); 
+                    },
+
+                    adjustBadgeLayout: function() {
+                        const badges = AppController.queryAllElements(DOM_SELECTORS.OFFER_BADGE_CLASS);
+                        const isMobile = globalContext.innerWidth < 1024;
+                        badges.forEach(badge => {
+                            badge.style.right = isMobile ? '5px' : '-10px';
+                            badge.style.top = isMobile ? '5px' : '-10px'; 
+                            badge.style.transform = `rotate(${isMobile ? 10 : 15}deg)`;
+                            const img = AppController.queryElement('img', badge);
+                            if (img) img.style.height = isMobile ? '28px' : '32px';
+                        });
+                    }
+                },
+                
+                uiInteractionsModule: {
+                    bindCopyActions: function() {
+                        const copyTriggers = AppController.queryAllElements(DOM_SELECTORS.COPY_BUTTON_CLASS);
+                        copyTriggers.forEach(btn => {
+                            if (btn.id === 'trigger-csgoskins-codecopy' && btn.closest('article').querySelector('img[src="pirate.png"]')) {
+                                btn.id = 'trigger-pirateswap-codecopy';
+                            }
+
+                            btn.onclick = () => {
+                                const textToGrab = btn.dataset.copyText;
+                                const btnId = btn.id;
+                                const icon = AppController.queryElement('i', btn);
+                                const txtSpan = AppController.queryElement('span', btn);
+
+                                if (!textToGrab || !btnId || AppController.state.isCopied[btnId]) return;
+
+                                navigator.clipboard.writeText(textToGrab)
+                                    .then(() => {
+                                        AppController.state.isCopied[btnId] = true;
+                                        const originalContent = { text: txtSpan.textContent, iconClass: icon.className };
+
+                                        txtSpan.textContent = "COPIED!";
+                                        icon.className = 'fas fa-check text-[var(--txt-main)] ml-2'; 
+                                        btn.classList.add('bg-[var(--clr-accent-primary)]', 'border-[var(--clr-accent-primary)]'); 
+                                        btn.classList.remove('bg-gray-700', 'border-gray-500');
+
+                                        if (AppController.timers.copyFeedback[btnId]) clearTimeout(AppController.timers.copyFeedback[btnId]);
+                                        
+                                        AppController.timers.copyFeedback[btnId] = setTimeout(() => {
+                                            txtSpan.textContent = originalContent.text;
+                                            icon.className = originalContent.iconClass;
+                                            btn.classList.remove('bg-[var(--clr-accent-primary)]', 'border-[var(--clr-accent-primary)]');
+                                            btn.classList.add('bg-gray-700', 'border-gray-500');
+                                            AppController.state.isCopied[btnId] = false;
+                                        }, 2500);
+                                    })
+                                    .catch(err => {
+                                        txtSpan.textContent = "ERROR";
+                                        let originalButtonText = "COPY CODE";
+                                        if (btn.dataset.copyText) {
+                                            originalButtonText = `CODE: ${btn.dataset.copyText.toUpperCase()}`;
+                                        }
+                                        setTimeout(() => { txtSpan.textContent = originalButtonText; }, 2000);
+                                    });
+                            };
+                        });
+                    }
+                },
+
+                ageGateModule: {
+                    trigger: function() {
+                        const { ageModal, ageConfirmBtn, ageDenyBtn, mainWrapper } = AppController.elements;
+                        if (!ageModal || !ageConfirmBtn || !ageDenyBtn || !mainWrapper) return;
+
+                        mainWrapper.classList.add('main-layout-shroud');
+                        docContext.body.style.overflow = 'hidden';
+                        
+                        ageModal.style.display = 'flex';
+                        setTimeout(() => { ageModal.classList.add('visible'); }, 50);
+
+                        ageConfirmBtn.onclick = () => {
+                            ageModal.classList.remove('visible');
+                            setTimeout(() => { ageModal.style.display = 'none'; }, 300);
+                            
+                            docContext.body.style.overflow = '';
+                            mainWrapper.classList.remove('main-layout-shroud');
+                            mainWrapper.classList.add('loaded');
+                            
+                            AppController.streamStatusModule.fetchAndUpdate();
+                            AppController.uiEffectsModule.startSymbolRain();
+                            AppController.uiEffectsModule.adjustBadgeLayout();
+                        };
+                        ageDenyBtn.onclick = () => globalContext.location.href = CONFIG.AGE_FAIL_NAV;
+                    }
+                },
+
+                streamStatusModule: {
+                    _fetchApiData: async (url) => {
+                        try {
+                            const resp = await fetch(url);
+                            if (!resp.ok) throw new Error(`API Error ${resp.status}`);
+                            return resp;
+                        } catch (e) {
+                            return null;
+                        }
+                    },
+                    
+                    _getKickStatus: async () => {
+                        const resp = await AppController.streamStatusModule._fetchApiData(CONFIG.API_URLS.KICK_STATUS(CONFIG.STREAM_PROVIDERS.KICK_USER));
+                        if (!resp) return "Error";
+                        const data = await resp.json();
+                        return data.livestream ? "Online" : "Offline";
+                    },
+
+                    _getTwitchStatus: async () => {
+                        const resp = await AppController.streamStatusModule._fetchApiData(CONFIG.API_URLS.TWITCH_STATUS(CONFIG.STREAM_PROVIDERS.TWITCH_USER));
+                        if (!resp) return "Error";
+                        const text = await resp.text();
+                        return text.includes('offline') ? "Offline" : "Online";
+                    },
+
+                    _updateDisplay: (status, url = null) => {
+                        const { streamStatusWidget, streamStatusLabel } = AppController.elements;
+                        streamStatusWidget.classList.remove('is-polling', 'is-broadcasting', 'is-idle', 'border-[var(--clr-accent-neutral)]', 'border-[var(--clr-accent-primary)]', 'border-[var(--clr-accent-negative)]', 'cursor-pointer', 'cursor-default');
+                        streamStatusWidget.removeAttribute('href');
+                        streamStatusWidget.removeAttribute('target');
+
+                        if (status === "Online" && url) {
+                            streamStatusWidget.classList.add('is-broadcasting', 'border-[var(--clr-accent-primary)]', 'cursor-pointer');
+                            streamStatusLabel.textContent = 'LIVE NOW!';
+                            streamStatusWidget.href = url;
+                            streamStatusWidget.target = '_blank';
+                        } else if (status === "Offline") {
+                            streamStatusWidget.classList.add('is-idle', 'border-[var(--clr-accent-negative)]', 'cursor-default');
+                            streamStatusLabel.textContent = 'OFFLINE';
+                        } else if (status === "Polling") {
+                            streamStatusWidget.classList.add('is-polling', 'border-[var(--clr-accent-neutral)]', 'cursor-default');
+                            streamStatusLabel.textContent = 'Checking status...';
+                        }
+                         else { 
+                            streamStatusWidget.classList.add('is-polling', 'border-[var(--clr-accent-neutral)]', 'cursor-default');
+                            streamStatusLabel.textContent = 'Status unavailable';
+                        }
+                    },
+
+                    fetchAndUpdate: async function() {
+                        const { streamStatusWidget, streamStatusLabel } = AppController.elements;
+                        if (!streamStatusWidget || !streamStatusLabel) return;
+
+                        this._updateDisplay('Polling');
+
+                        try {
+                            const twitchState = await this._getTwitchStatus();
+                            if (twitchState === "Online") {
+                                this._updateDisplay("Online", `https://twitch.tv/${CONFIG.STREAM_PROVIDERS.TWITCH_USER}`);
+                                return;
+                            }
+
+                            const kickState = await this._getKickStatus();
+                            this._updateDisplay(kickState === "Online" ? "Online" : "Offline", 
+                                            kickState === "Online" ? `https://kick.com/${CONFIG.STREAM_PROVIDERS.KICK_USER}` : null);
+                        } catch (e) {
+                            this._updateDisplay("Error");
+                        }
+                    }
+                },
+                
+                responsiveModule: {
+                    applyMobileStyling: function() {
+                        docContext.body.style.paddingTop = '0px'; 
+                        const contentArea = AppController.queryElement(DOM_SELECTORS.MAIN_CONTENT_AREA);
+                        if(contentArea) contentArea.style.paddingTop = '1rem';
+                    },
+                    applyDesktopStyling: function() {
+                        docContext.body.style.paddingTop = ''; 
+                        const contentArea = AppController.queryElement(DOM_SELECTORS.MAIN_CONTENT_AREA);
+                        if(contentArea) contentArea.style.paddingTop = ''; 
+                    },
+                    handleResize: function() {
+                        const isMobile = globalContext.innerWidth < 1024;
+                        if(isMobile) {
+                            AppController.responsiveModule.applyMobileStyling();
+                        } else {
+                            AppController.responsiveModule.applyDesktopStyling();
+                        }
+                        AppController.uiEffectsModule.adjustBadgeLayout();
+                    }
+                }
+            };
+
+            docContext.addEventListener('DOMContentLoaded', AppController.initializeUserInterface.bind(AppController));
+
+        })(window, document);
+    </script>
+</body>
+</html>
